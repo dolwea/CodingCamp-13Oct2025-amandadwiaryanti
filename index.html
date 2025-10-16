@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TO-DO List App - Tailwind</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary-bg": "#1e1e1e",
+              "card-bg": "#2d2d2d",
+              "accent-purple": "#9b59b6",
+              "success-green": "#2ecc71",
+              "pending-yellow": "#f1c40f",
+              "action-blue": "#3498db",
+              "danger-red": "#e74c3c",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-primary-bg text-gray-100 min-h-screen flex justify-center p-5"
+  >
+    <div
+      class="container w-full max-w-4xl bg-card-bg rounded-xl shadow-2xl p-6 md:p-8"
+    >
+      <header
+        class="flex justify-between items-center pb-5 border-b border-gray-700"
+      >
+        <h1 class="text-3xl font-bold text-accent-purple">TO-DO List</h1>
+        <div class="profile-icon">
+          <i
+            class="fas fa-user-circle text-2xl text-gray-400 cursor-pointer"
+          ></i>
+        </div>
+      </header>
+
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6">
+        <div
+          class="card bg-gray-700 p-4 rounded-lg flex flex-col items-center shadow-lg"
+        >
+          <i class="fas fa-list-ul text-2xl text-accent-purple mb-1"></i>
+          <p class="text-sm text-gray-300">TOTAL TASKS</p>
+          <span id="total-tasks" class="text-3xl font-extrabold mt-1">0</span>
+        </div>
+        <div
+          class="card bg-gray-700 p-4 rounded-lg flex flex-col items-center shadow-lg"
+        >
+          <i class="fas fa-check-circle text-2xl text-success-green mb-1"></i>
+          <p class="text-sm text-gray-300">COMPLETED</p>
+          <span id="completed-tasks" class="text-3xl font-extrabold mt-1"
+            >0</span
+          >
+        </div>
+        <div
+          class="card bg-gray-700 p-4 rounded-lg flex flex-col items-center shadow-lg"
+        >
+          <i
+            class="fas fa-hourglass-half text-2xl text-pending-yellow mb-1"
+          ></i>
+          <p class="text-sm text-gray-300">PENDING</p>
+          <span id="pending-tasks" class="text-3xl font-extrabold mt-1">0</span>
+        </div>
+        <div
+          class="card bg-gray-700 p-4 rounded-lg flex flex-col items-center shadow-lg"
+        >
+          <i class="fas fa-chart-line text-2xl text-action-blue mb-1"></i>
+          <p class="text-sm text-gray-300">PROGRESS</p>
+          <span id="progress-percent" class="text-3xl font-extrabold mt-1"
+            >0%</span
+          >
+        </div>
+      </section>
+
+      <section class="py-5 border-b border-gray-700">
+        <form id="task-form" class="flex flex-col md:flex-row gap-2">
+          <input
+            type="text"
+            id="task-input"
+            placeholder="Add a todo..."
+            required
+            class="flex-grow p-3 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-purple"
+          />
+          <input
+            type="date"
+            id="date-input"
+            required
+            class="w-full md:w-44 p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-accent-purple cursor-text"
+          />
+          <button
+            type="submit"
+            class="add-task-btn bg-accent-purple text-white p-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-200 w-full md:w-auto"
+          >
+            <i class="fas fa-plus"></i>
+          </button>
+        </form>
+      </section>
+
+      <section
+        class="flex flex-col md:flex-row justify-between items-stretch md:items-center py-5 gap-4"
+      >
+        <div class="search-filter-container flex gap-3 w-full md:w-auto">
+          <div
+            class="search-box flex items-center bg-gray-700 rounded-lg p-2 flex-grow"
+          >
+            <i class="fas fa-search text-gray-400 mr-2"></i>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search tasks... (Ctrl+f)"
+              class="bg-transparent border-none text-white outline-none w-full"
+            />
+          </div>
+          <button
+            id="filter-btn"
+            class="filter-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition duration-200 whitespace-nowrap"
+          >
+            <i class="fas fa-filter mr-1"></i> FILTER
+          </button>
+        </div>
+
+        <div class="list-actions flex gap-3 w-full md:w-auto justify-end">
+          <select
+            id="sort-select"
+            class="sort-select p-2 border border-gray-600 rounded-lg bg-gray-700 text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-purple"
+          >
+            <option value="none">SORT</option>
+            <option value="date-asc">Due Date (Asc)</option>
+            <option value="date-desc">Due Date (Desc)</option>
+            <option value="status">Status</option>
+          </select>
+          <button
+            id="delete-all-btn"
+            class="delete-all-btn bg-danger-red text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition duration-200 whitespace-nowrap"
+          >
+            <i class="fas fa-trash-alt mr-1"></i> DELETE ALL
+          </button>
+        </div>
+      </section>
+
+      <section class="task-list-section">
+        <div
+          class="task-list-header grid grid-cols-4 gap-4 p-3 font-bold text-gray-400 border-b-2 border-gray-600"
+        >
+          <div class="col-span-2">TASK</div>
+          <div>DUE DATE</div>
+          <div>STATUS</div>
+        </div>
+        <ul id="task-list" class="task-list divide-y divide-gray-700 min-h-32">
+          <p id="no-tasks-message" class="text-center p-5 text-gray-500">
+            No tasks found
+          </p>
+        </ul>
+      </section>
+
+      <footer class="text-center pt-5 text-gray-500 text-sm">
+        Made with <i class="fas fa-heart text-danger-red"></i> by Amanda Dwi
+        Aryanti
+      </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
